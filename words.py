@@ -8,6 +8,7 @@ def all_letters_unique(word):
   return len(word_as_set) == 5
 
 def word_contains_only_common_letters(word):
+  # currently unused
   for letter in word:
     if letter not in COMMON_LETTERS:
       return False
