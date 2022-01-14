@@ -47,7 +47,9 @@ def print_best_combos():
   csv_file.close()
   keys_list = [key for key in value_to_combos_dict]
   keys_list.sort()
-  best_value = keys_list[0]
+  best_value = 100
+  if keys_list:
+    best_value = keys_list[0]
   print('Best combos have a score of %s' % best_value)
   best_combos = value_to_combos_dict[best_value]
   best_combos.sort()

@@ -2,21 +2,33 @@ from words import FILTERED_WORD_LIST
 from combos import print_best_combos
 from itertools import combinations
 
-def get_word_combos(num_words):
+# FILTERED_WORD_LIST = ['gawds', 'elfin', 'umpty', 'brock', 'flawn', 'mebos', 'dript', 'gucky']
+def check_for_working_combo(combo):
+  combo_works = combination_has_unique_letters(combo) and word_combo_contains_all_required_letters(combo)
+  return combo_works
+
+
+def write_word_combos_csv(num_words):
   print('Getting combinations')
   all_combinations = combinations(FILTERED_WORD_LIST, num_words)
-  print('Combinations fetched')
-  filtered_combinations = []
+  compressed_combinations = filter(
+    check_for_working_combo, 
+    all_combinations
+  )
   index = 0
-  for combination in all_combinations:
+  csv_file = open("combos.csv", "w")
+
+  for combination in compressed_combinations:
+    print(combination)
     index += 1
-    if index % 100 == 0:
+    if index % 10000000 == 0:
       print('Processed %s combos' % index)
     if combination_has_unique_letters(combination) and word_combo_contains_all_required_letters(combination):
-      print('combination found: %s' % combination)
-      filtered_combinations.append(combination)
-
-  return(filtered_combinations)
+      combo_str = ','.join(combination)
+      print('combination found: %s' % combo_str)
+      csv_file.write(combo_str)
+      csv_file.write('\n')
+  csv_file.close()
 
 def combination_has_unique_letters(combination_tuple):
   letters = ''.join(combination_tuple)
@@ -32,24 +44,13 @@ def word_combo_contains_all_required_letters(word_combo):
       return False
   return True
 
-def write_combos_to_csv(combos):
-  combo_string_list = set([
-    ', '.join(combo) for combo in combos
-  ])
-  csv_file = open("combos.csv", "w")
-  for combo in combo_string_list:
-    csv_file.write(combo)
-    csv_file.write('\n')
-  csv_file.close()
-
 def main():
-  combo_length = 4 
+  combo_length = 4
   # warning: increasing this to 4 will make the script take much longer
   # fortunately for you i've already run it on combos of 4, check 4_words_unf.csv
-  combos = get_word_combos(combo_length)
-  write_combos_to_csv(combos)
+  write_word_combos_csv(combo_length)
   print('------------')
-  print_best_combos()
+  # print_best_combos()
 
 main()
 
