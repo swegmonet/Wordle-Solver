@@ -7,13 +7,6 @@ def all_letters_unique(word):
   word_as_set = set(word_as_list)
   return len(word_as_set) == 5
 
-def word_contains_only_common_letters(word):
-  # currently unused
-  for letter in word:
-    if letter not in COMMON_LETTERS:
-      return False
-  return True
-
 FILTERED_WORD_LIST = [
   word for word in set(WORD_LIST) if all_letters_unique(word)
 ]

@@ -36,16 +36,24 @@ def determine_combo_value(combo_row):
 
 
 def print_best_combos():
+  value_to_combos_dict = {}
   csv_file = open("combos.csv", "r")
   reader = csv.reader(csv_file, delimiter=',', quotechar='|')
-  lowest_value = 50
   for row in reader:
     row_value = determine_combo_value(row)
-    if row_value <= lowest_value:
-      print(row)
-      print(row_value)
-      lowest_value = row_value
+    if not value_to_combos_dict.get(row_value):
+      value_to_combos_dict[row_value] = []
+    value_to_combos_dict[row_value].append(row)
   csv_file.close()
+  keys_list = [key for key in value_to_combos_dict]
+  keys_list.sort()
+  best_value = keys_list[0]
+  print('Best combos have a score of %s' % best_value)
+  best_combos = value_to_combos_dict[best_value]
+  best_combos.sort()
+  for best_combo in best_combos:
+    print(best_combo)
+  return value_to_combos_dict[best_value]
 
 # For the record, the best combos of 4 letter words with a value of 40 are:
 # ['gawds', ' elfin', ' umpty', ' brock']
@@ -54,3 +62,15 @@ def print_best_combos():
 # ['speck', ' admin', ' growl', ' bufty']
 # ['navew', ' brods', ' umpty', ' flick']
 # ['fawny', ' golem', ' dript', ' bucks']
+# ['bavin', ' dowts', ' fleck', ' rumpy']
+# ['bilgy', ' croft', ' dwaum', ' penks']
+# ['bilgy', ' croft', ' swank', ' umped']
+# ['bilgy', ' croft', ' umped', ' wanks']
+# ['bilgy', ' drawn', ' focus', ' kempt']
+# ['bings', ' croft', ' dwalm', ' pukey']
+# ['blimp', ' croft', ' gawsy', ' nuked']
+# ['bowet', ' dangs', ' flick', ' rumpy']
+# ['bowet', ' dings', ' flack', ' rumpy']
+# ['budge', ' croft', ' skimp', ' wanly']
+# ['cadgy', ' frown', ' plumb', ' tikes']
+# ['croft', ' debug', ' skimp', ' wanly']

@@ -1,43 +1,28 @@
-from words import COMMON_LETTERS, FILTERED_WORD_LIST
+from words import FILTERED_WORD_LIST
 from combos import print_best_combos
+from itertools import combinations
 
 def get_word_combos(num_words):
-  word_combos = []
-  for word in FILTERED_WORD_LIST:
-    word_combo = [word]
-    i = 0
+  print('Getting combinations')
+  all_combinations = combinations(FILTERED_WORD_LIST, num_words)
+  print('Combinations fetched')
+  filtered_combinations = []
+  index = 0
+  for combination in all_combinations:
+    index += 1
+    if index % 100 == 0:
+      print('Processed %s combos' % index)
+    if combination_has_unique_letters(combination) and word_combo_contains_all_required_letters(combination):
+      print('combination found: %s' % combination)
+      filtered_combinations.append(combination)
 
-    while i < len(FILTERED_WORD_LIST):
-      cur_word = FILTERED_WORD_LIST[i]
-      i += 1;
+  return(filtered_combinations)
 
-      if word_combo_shares_letters(word_combo, cur_word):
-        continue
-      
-      word_combo.append(cur_word)
-      word_combos.append(word_combo)
+def combination_has_unique_letters(combination_tuple):
+  letters = ''.join(combination_tuple)
+  letters_list = list(letters)
+  return len(letters_list) == len(set(letters_list))
 
-      if len(word_combo) >= num_words:
-        break
-
-      i = 0
-
-  return word_combos
-
-def word_combo_shares_letters(word_combo, word):
-  flattened_combo = ''.join(word_combo)
-  for letter in word:
-    if letter in flattened_combo:
-      return True
-  return False
-
-
-def word_combo_contains_only_common_letters(word_combo):
-  flattened_combo = ''.join(word_combo)
-  for letter in flattened_combo:
-    if letter not in COMMON_LETTERS:
-      return False
-  return True
   
 def word_combo_contains_all_required_letters(word_combo):
   REQUIRED_LETTERS = 'strnaeiou'
@@ -47,19 +32,24 @@ def word_combo_contains_all_required_letters(word_combo):
       return False
   return True
 
-combo_length = 4 # warning: increasing this to 4 will make the script take much longer, thanks O(N!) efficiency
-# fortunately for you i've already run it on combos of 4, check 4_words_unf.csv
-combos = get_word_combos(combo_length)
-filtered_combos = [combo for combo in combos if len(combo) == combo_length and word_combo_contains_all_required_letters(combo)]
+def write_combos_to_csv(combos):
+  combo_string_list = set([
+    ', '.join(combo) for combo in combos
+  ])
+  csv_file = open("combos.csv", "w")
+  for combo in combo_string_list:
+    csv_file.write(combo)
+    csv_file.write('\n')
+  csv_file.close()
 
+def main():
+  combo_length = 4 
+  # warning: increasing this to 4 will make the script take much longer
+  # fortunately for you i've already run it on combos of 4, check 4_words_unf.csv
+  combos = get_word_combos(combo_length)
+  write_combos_to_csv(combos)
+  print('------------')
+  print_best_combos()
 
-combo_string_list = set([
-  ', '.join(combo) for combo in filtered_combos
-])
-csv_file = open("combos.csv", "w")
-for combo in combo_string_list:
-  csv_file.write(combo)
-  csv_file.write('\n')
-csv_file.close()
-print('------------')
-print_best_combos()
+main()
+
